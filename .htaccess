@@ -1,0 +1,91 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteRule ^$ public/index.php [L]
+    RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
+</IfModule>
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+
+# Add correct content-type for fonts
+AddType application/vnd.ms-fontobject .eot
+AddType font/ttf .ttf
+AddType font/otf .otf
+AddType font/woff .woff
+AddType font/woff2 .woff2
+AddType image/svg+xml .svg
+
+# Compress compressible fonts
+AddOutputFilterByType DEFLATE font/ttf font/otf image/svg+xml
+
+
+## EXPIRES CACHING ##
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpg "access 1 year"
+ExpiresByType image/jpeg "access 1 year"
+ExpiresByType image/gif "access 1 year"
+ExpiresByType image/png "access 1 year"
+ExpiresByType image/svg+xml "access 1 year"
+ExpiresByType image/webp "access 1 year"
+ExpiresByType text/css "access 1 year"
+ExpiresByType text/html "access 1 year"
+ExpiresByType application/pdf "access 1 year"
+ExpiresByType text/x-javascript "access 1 year"
+ExpiresByType application/x-shockwave-flash "access 1 year"
+ExpiresByType image/x-icon "access 1 year"
+ExpiresByType video/ogg "access 1 year"
+ExpiresByType video/mp4 "access 1 year"
+ExpiresByType video/webm "access 1 year"
+ExpiresByType video/mpeg "access 1 year"
+ExpiresDefault "access 1 year"
+ExpiresByType application/font-woff2  "access plus 1 year"
+ExpiresByType application/x-font-woff2  "access plus 1 year"
+ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
+ExpiresByType font/ttf "access plus 1 year"
+ExpiresByType font/otf "access plus 1 year"
+ExpiresByType font/woff "access plus 1 year"
+ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+## EXPIRES CACHING ##
+# 1 Year for most static assets
+<filesMatch ".(css|jpg|jpeg|png|webp|svg|gif|js|ico|ogg|mp4|webm|woff2)$">
+Header set Cache-Control "max-age=31536000, public"
+</filesMatch>
+
+<IfModule LiteSpeed>
+RewriteEngine on
+CacheLookup on
+RewriteRule .* - [E=Cache-Control:no-autoflush]
+RewriteRule ^min/\w+\.(css|js) - [E=cache-control:no-vary]
+
+### marker CACHE RESOURCE start ###
+### marker CACHE RESOURCE end ###
+
+### marker FAVICON start ###
+RewriteRule favicon\.ico - [E=cache-control:max-age=31536000]
+### marker FAVICON end ###
+
+</IfModule>
+
+<IfModule LiteSpeed>
+CacheLookup public on
+</IfModule>
+
+<IfModule mod_headers.c>
+	Header set X-XSS-Protection "1; mode=block"
+	Header always append X-Frame-Options SAMEORIGIN
+	Header set X-Content-Type-Options nosniff
+</IfModule>
+Options -Indexes
+
+Options -MultiViews
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php81” package as the default “PHP” programming language.
+#<IfModule mime_module>
+#  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
+#</IfModule>
+# php -- END cPanel-generated handler, do not edit
